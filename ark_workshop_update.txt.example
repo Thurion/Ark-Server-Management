@@ -1,0 +1,5 @@
+@ShutdownOnFailedCommand 1 //set to 0 if updating multiple servers at once
+@NoPromptForPassword 1
+login user password
+workshop_download_item 346110 479478153
+quit

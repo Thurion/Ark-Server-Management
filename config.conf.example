@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# Ark launch options
+ARK_THE_ISLAND=TheIsland?listen
+ARK_MOD=/Game/Mods/479478153/MalnexMod?listen?ModId\=479478153
+ARK_PORTS=Port\=7777?QueryPort\=27015?RCONEnabled\=true?RCONPort\=32123
+ARK_PASSWORDS=ServerPassword\=MyPass?ServerAdminPassword\=MySecretPass
+ARK_PVE_OPTIONS=ServerPVE\=true?PvEStructureDecay?DestructionPeriod\=0?bDisableStructureDecayPVE\=true
+ARK_SESSION=SessionName\=Malnex?AutoSavePeriodMinutes\=5?MaxPlayers\=20?DifficultyOffset\=0.5?allowThirdPersonPlayer\=true
+ARK_TWEAKS=ResourcesRespawnPeriodMultiplier\=0.5?TamingSpeedMultiplier=1.33?ClampResourceHarvestDamage\=true?StructureResistanceMultiplier\=0.1
+ARK_PREVENT_DOWNLOAD=PreventDownloadSurvivors\=true?PreventDownloadItems\=true?PreventDownloadDinos\=true
+
+# location of config file
+CONFIG=/home/ark/server/ShooterGame/Saved/Config/LinuxServer/GameUserSettings.ini
+
+# location of mcrcon
+MCRCON=/home/ark/mcrcon/mcrcon
+
+# executable
+EXECUTABLE=/home/ark/server/ShooterGame/Binaries/Linux/ShooterGameServer
+LAUNCH_PARAMS="$ARK_MOD?$ARK_PORTS?$ARK_SESSION -server -log"
+
+# Steam
+STEAM_DIR=/home/ark/Steam
+STEAM_CMD=$STEAM_DIR/steamcmd.sh
+STEAM_WORKSHOP_APPID=346110
+STEAM_WORKSHOP_MODID=479478153
+STEAM_WORKSHOP_MOD_DIR=/home/ark/server/ShooterGame/Content/Mods
+
+# name of screen session
+SCREEN=arkServer
+
+# warning intervall in minutes; must be greater than 5
+WARNING_INTERVALL=15
+
+# what are the options in the config file called?
+CFG_RCON_PW=ServerAdminPassword
+CFG_RCON_PORT=RCONPort
+
+# use only if port and pw is not stored in the config!
+RCON_PW=
+RCON_PORT=
+RCON_HOST=localhost
+
+# rcon commands
+RCON_STOP=DoExit
+
+# SteamCMD scripts
+STEAMCMD_UPDATECHECK=/home/ark/scripts/ark_update_check.txt
+STEAMCMD_UPDATE=/home/ark/scripts/ark_update_script.txt
+STEAMCMD_WORKSHOP=/home/ark/scripts/ark_workshop_update.txt
