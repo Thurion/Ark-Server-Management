@@ -189,6 +189,14 @@ stop () {
 }
 
 update () {
+
+    if screen -list | grep -q $SCREEN; then
+        echo -e "There is already a screen session running."
+        echo -e "Aborting ..."
+        echo -e
+        exit 1
+    fi
+
     $STEAM_CMD +runscript "$STEAMCMD_UPDATE"
     
     if [ -z "$STEAM_WORKSHOP_APPID" -o -z "$STEAM_WORKSHOP_MODID" ]; then
