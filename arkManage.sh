@@ -134,11 +134,6 @@ start () {
 }
 
 stop () {
-    if [ ! $(screen -list | grep -q $SCREEN) ]; then
-        echo -e "No server is running. Doing nothing."
-        return
-    fi
-
     if [ -z "$RCON_PW" -o -z "$RCON_PORT" ]; then
         parseConfig
     fi
@@ -148,6 +143,12 @@ stop () {
         exit 1
     fi
     
+    if ! lsof -i | grep -q "$RCON_PORT (LISTEN)"; then
+        echo -e "Server is not running on RCON port $RCON_PORT."
+        echo -e "Can't shut it down!"
+        return
+    fi
+
     local Time=$1
     local Message="${@:2}"
     
