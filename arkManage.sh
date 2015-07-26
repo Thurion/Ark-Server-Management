@@ -1,10 +1,14 @@
 #!/bin/bash
 
+# where is the config located
 source /home/ark/scripts/config.conf
 
 UPDATES_EXECUTABLE=0
 UPDATES_WORKSHOP=0
 STEAM_APPCHACHE=STEAM_DIR/appcache
+
+# change to warnign time in minutes
+SHUTDOWN_TIME_UPDATES=15
 
 parseConfig() {
     RCON_PW=$(cat $CONFIG | grep $CFG_RCON_PW | cut -d'=' -f2)
@@ -259,7 +263,7 @@ autoUpdate () {
     fi
     
     if [ -n "$Reason" ]; then
-        stop 15 "$Reason"
+        stop $SHUTDOWN_TIME_UPDATES $Reason
         updateAndStart
     fi
 }
