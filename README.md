@@ -26,3 +26,9 @@ Running the script without any arguments prints a basic help line:
 * **updateCheck** checks for new server and workshop updates
 * **autoUpdate** is meant to use in a cron jobs. It checks for new updates and if there is one, it stops the server, does the update and starts it afterwards.
 * **updateAndStart** usage of update and start for your convenience ;)
+
+Limitations
+--------
+
+* Supports only one server
+* Not ready for stackable mods which will be available in the near future
