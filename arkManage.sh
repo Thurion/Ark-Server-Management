@@ -20,8 +20,8 @@ msgServerMinutes() {
     if [ -z "$Message" ]; then
         Message="No reason given"
     fi
-	$MCRCON -s -H $RCON_HOST -P $RCON_PORT -p $RCON_PW "Broadcast Server shutting down in $1 minutes. Reason: $Message"
-	echo -e "Server shutting down down in $1 minutes. Reason: $Message"
+    $MCRCON -s -H $RCON_HOST -P $RCON_PORT -p $RCON_PW "Broadcast Server shutting down in $1 minutes. Reason: $Message"
+    echo -e "Server shutting down down in $1 minutes. Reason: $Message"
 }
 
 msgServerSeconds() {
@@ -29,34 +29,33 @@ msgServerSeconds() {
     if [ -z "$Message" ]; then
         Message="No reason given"
     fi
-	$MCRCON -s -H $RCON_HOST -P $RCON_PORT -p $RCON_PW "Broadcast Server shutting down in $1 seconds. Reason: $Message"
-	echo -e "Server shutting down in $1 seconds. Reason: $Message"
+    $MCRCON -s -H $RCON_HOST -P $RCON_PORT -p $RCON_PW "Broadcast Server shutting down in $1 seconds. Reason: $Message"
+    echo -e "Server shutting down in $1 seconds. Reason: $Message"
 }
 
 countDown() {
-	msgServerSeconds 60
+    msgServerSeconds 60
     echo -e "Shut down in 60 seconds."
-	sleep 30s
-	msgServerSeconds 30
+    sleep 30s
+    msgServerSeconds 30
     echo -e "Shut down in 30 seconds."
-	sleep 15s
-	local timer=15
-	while [ $timer -gt 0 ]; do
-		msgServerSeconds $timer
+    sleep 15s
+    local timer=15
+    while [ $timer -gt 0 ]; do
+        msgServerSeconds $timer
         #echo -e "Shut down in $timer."
-		sleep 1s
-		let timer-=1
-	done
+        sleep 1s
+        let timer-=1
+    done
 
-	# stop server
-	$MCRCON -s -H $RCON_HOST -P $RCON_PORT -p $RCON_PW $RCON_STOP
+    # stop server
+    $MCRCON -s -H $RCON_HOST -P $RCON_PORT -p $RCON_PW $RCON_STOP
 }
 
 # taken from https://github.com/Zendrex/ARK-Linux-Server-Script
-function waitBackgroundTask
-{
+waitBackgroundTask () {
     PROC_ID=$1
-    
+
     echo -ne " "
     while :; do
         if kill -0 $PROC_ID 2>/dev/null; then
@@ -66,18 +65,17 @@ function waitBackgroundTask
         fi
         sleep 0.5s
     done
-    
+
     echo -e
 }
 
 # taken from https://github.com/Zendrex/ARK-Linux-Server-Script
-function parseSteamAcf
-{
+parseSteamAcf () {
     local path=$1
     if [ -z $path ]; then
         return
     fi
-    
+
     local splitPos=`expr index "$path" .`
     local newPath=""
     local searchName="\"$path\""
@@ -86,13 +84,13 @@ function parseSteamAcf
         searchName=${path:0:$splitPos-1}
         searchName="\"$searchName\""
     fi
-    
+
     local count=0
     while read name val; do
         if [ -z $name ]; then
             continue
         fi
-        
+
         if [ $name == $searchName ] && [ $count -lt 2 ]; then
             if [ -z $newPath ]; then
                 local length=${#val}
@@ -110,14 +108,14 @@ function parseSteamAcf
             fi
         fi
     done
-    
+
     echo "NOT FOUND! ERROR?"
 }
 
 start () {
     if screen -list | grep -q $SCREEN; then
         echo -e "Screen session is already running. Checking if there is a server process ..."
-        
+
         if [ $(ps ux | grep -o "$EXECUTABLE" | wc -l) -gt 2 ]; then # ps gives 3 results
             echo -e "Server is already running. Nothing to do here ..."
             return
@@ -137,12 +135,12 @@ stop () {
     if [ -z "$RCON_PW" -o -z "$RCON_PORT" ]; then
         parseConfig
     fi
-    
+
     if [ -z "$RCON_PW" -o -z "$RCON_PORT" ]; then
         echo "Error parsing config or no RCON values provided"
         exit 1
     fi
-    
+
     if ! lsof -i | grep -q "$RCON_PORT (LISTEN)"; then
         echo -e "Server is not running on RCON port $RCON_PORT."
         echo -e "Can't shut it down!"
@@ -151,11 +149,11 @@ stop () {
 
     local Time=$1
     local Message="${@:2}"
-    
+
     if [ -z "$Time" ]; then
         Time=1
     fi
-    
+
     if ! [[ "$Time" =~ ^[0-9]+$ ]]; then
         echo -e "No valid Time given, using 1 minute"
         Time=1
@@ -163,10 +161,10 @@ stop () {
     fi
 
     #echo -e "Stopping server in $Time minute(s)."
-    
+
     while [ $Time -ge $WARNING_INTERVALL ]; do
         msgServerMinutes $Time $Message
-        
+
         if [ $(($Time-$WARNING_INTERVALL)) -ge 5 ]
         then
             let Time-=$WARNING_INTERVALL
@@ -177,7 +175,7 @@ stop () {
             Time=5
         fi
     done
-    
+
     if [ $Time -gt 1 ]; then
         msgServerMinutes $Time $Message
         # wait until there is 1 minute left
@@ -203,11 +201,11 @@ update () {
         # nothing else to do here
         continue
     fi
-    
+
     if [ -d "$STEAM_WORKSHOP_MOD_DIR/$STEAM_WORKSHOP_MODID" ]; then
         rm -r $STEAM_WORKSHOP_MOD_DIR/$STEAM_WORKSHOP_MODID
     fi
-    
+
     if [ "$1" = "-f" ]; then
         echo -e "Deleting previously downloaded workshop content for $STEAM_WORKSHOP_APPID."
         rm $STEAM_DIR/steamapps/workshop/appworkshop_$STEAM_WORKSHOP_APPID.acf
@@ -228,24 +226,24 @@ updateCheck () {
     if [ -d $STEAM_APPCHACHE ]; then
         rm -r $STEAM_APPCHACHE
     fi
-    
+
     # check for new server version
     local Result=$($STEAM_CMD +runscript "$STEAMCMD_UPDATECHECK" | grep "Update Required")
-      
+
     if [ -n "$Result" ]; then
-        # update available, shut down and restart the server. 
+        # update available, shut down and restart the server.
         echo -e "Found an update for the game"
         UPDATES_EXECUTABLE=1
     else
         echo -e "No updates for the game"
     fi
-    
+
     # check for new workshop contents
     if [ -z "$STEAM_WORKSHOP_APPID" -o -z "$STEAM_WORKSHOP_MODID" ]; then
         echo -e "No workshop IDs given, not checking for new content."
         return
     fi
-    
+
     local OldVersion=1
     if [ -e "$STEAM_DIR/steamapps/workshop/appworkshop_346110.acf" ]; then
         OldVersion=$(cat $STEAM_DIR/steamapps/workshop/appworkshop_$STEAM_WORKSHOP_APPID.acf | parseSteamAcf "AppWorkshop.WorkshopItemsInstalled.$STEAM_WORKSHOP_MODID.timeupdated")
@@ -253,20 +251,19 @@ updateCheck () {
     else
         echo -e "Mod $STEAM_WORKSHOP_MODID not yet downloaded"
     fi
-    
+
     $STEAM_CMD +runscript "$STEAMCMD_WORKSHOP" > /dev/null &
     waitBackgroundTask $!
-    
+
     local NewVersion=$(cat $STEAM_DIR/steamapps/workshop/appworkshop_$STEAM_WORKSHOP_APPID.acf | parseSteamAcf "AppWorkshop.WorkshopItemsInstalled.$STEAM_WORKSHOP_MODID.timeupdated")
     #echo -e "new version: $NewVersion"
-    
+
     if [ $NewVersion -gt $OldVersion ]; then
         echo -e "New workshop content available."
         UPDATES_WORKSHOP=1
     else
         echo -e "No new workshop content available."
     fi
-    
 }
 
 autoUpdate () {
@@ -280,7 +277,7 @@ autoUpdate () {
     elif [ $UPDATES_WORKSHOP -gt 0 ]; then
         Reason="Workshop updates"
     fi
-    
+
     if [ -n "$Reason" ]; then
         stop $SHUTDOWN_TIME_UPDATES $Reason
         updateAndStart
