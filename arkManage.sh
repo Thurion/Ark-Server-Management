@@ -189,7 +189,6 @@ stop () {
 }
 
 update () {
-
     if screen -list | grep -q $SCREEN; then
         echo -e "There is already a screen session running."
         echo -e "Aborting ..."
@@ -198,7 +197,8 @@ update () {
     fi
 
     $STEAM_CMD +runscript "$STEAMCMD_UPDATE"
-    
+    echo -e;echo -e;
+
     if [ -z "$STEAM_WORKSHOP_APPID" -o -z "$STEAM_WORKSHOP_MODID" ]; then
         # nothing else to do here
         continue
@@ -208,6 +208,13 @@ update () {
         rm -r $STEAM_WORKSHOP_MOD_DIR/$STEAM_WORKSHOP_MODID
     fi
     
+    if [ "$1" = "-f" ]; then
+        echo -e "Deleting previously downloaded workshop content for $STEAM_WORKSHOP_APPID."
+        rm $STEAM_DIR/steamapps/workshop/appworkshop_$STEAM_WORKSHOP_APPID.acf
+        rm -r $STEAM_DIR/steamapps/workshop/content/$STEAM_WORKSHOP_APPID
+    fi
+
+    echo -e "Downloading workshop content. If SteamCMD misses a new version, try using ./arkManage.sh update -f"
     $STEAM_CMD +runscript "$STEAMCMD_WORKSHOP" > /dev/null &
     waitBackgroundTask $!
 
@@ -288,7 +295,7 @@ updateAndStart () {
 # Commands
 help () {
     echo -e; echo -e "Use the following commands: $RESET"
-    echo -e; echo -e "./arkManage.sh <start|stop <time in minutes> <message>|update|updateCheck|autoUpdate|updateAndStart>"
+    echo -e; echo -e "./arkManage.sh <start|stop <time in minutes> <message>|update <-f>|updateCheck|autoUpdate|updateAndStart>"
     echo -e; echo -e
 }
 
