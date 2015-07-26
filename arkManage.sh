@@ -43,7 +43,7 @@ countDown() {
 	local timer=15
 	while [ $timer -gt 0 ]; do
 		msgServerSeconds $timer
-        echo -e "Shut down in $timer."
+        #echo -e "Shut down in $timer."
 		sleep 1s
 		let timer-=1
 	done
