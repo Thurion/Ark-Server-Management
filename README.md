@@ -18,11 +18,11 @@ Usage
 --------
 
 Running the script without any arguments prints a basic help line:  
-`./arkManage.sh <start|stop <time in minutes> <message>|update|updateCheck|autoUpdate|updateAndStart>`
+`/arkManage.sh <start|stop <time in minutes> <message>|update <-f>|updateCheck|autoUpdate|updateAndStart>`
 
 * **start** starts the server in a new screen session if no server is running at the moment
 * **stop** stops the server via RCON. Time and message are optional.
-* **update** is meant for manual updates. Updates the server and workshop (if used)
+* **update** is meant for manual updates. Updates the server and workshop (if used). If SteamCMD doesn't recongnize an updated mod, use option "-f"
 * **updateCheck** checks for new server and workshop updates
 * **autoUpdate** is meant to use in a cron jobs. It checks for new updates and if there is one, it stops the server, does the update and starts it afterwards.
 * **updateAndStart** usage of update and start for your convenience ;)
