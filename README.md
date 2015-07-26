@@ -1,15 +1,28 @@
 # Ark-Server-Management
-For easier management of my Ark server
+For easier management of my Ark server. Feel free to use the scripts but be aware, that they might need to be customized.
 
 Installation
 --------
 
 Warning: A little knowledge of how to use the command line and Git are necessary because this is a basic installation guide.
 
-1.  Install steamCMD and the Ark server
+1.  Install steamCMD, the Ark server and screen
 2.  Get [mcrcon](https://github.com/Tiiffi/mcrcon/ "mcrcon") and compile it
 3.  Clone this repository
 4.  Create a copy of config.conf.example and edit the fields
 5.  Create a copy of ark_workshop_update.txt.example if you want to use mods. You need to add a valid user who owns the game.
 6.  Edit arkManage.sh and set the path to the config to your config
 7.  Make script executable
+
+Usage
+--------
+
+Running the script without any arguments prints a basic help line:  
+`./arkManage.sh <start|stop <time in minutes> <message>|update|updateCheck|autoUpdate|updateAndStart>`
+
+* **start** starts the server in a new screen session if no server is running at the moment
+* **stop** stops the server via RCON. Time and message are optional.
+* **update** is meant for manual updates. Updates the server and workshop (if used)
+* **updateCheck** checks for new server and workshop updates
+* **autoUpdate** is meant to use in a cron jobs. It checks for new updates and if there is one, it stops the server, does the update and starts it afterwards.
+* **updateAndStart** usage of update and start for your convenience ;)
