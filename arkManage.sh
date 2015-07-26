@@ -200,6 +200,9 @@ update () {
         rm -r $STEAM_WORKSHOP_MOD_DIR/$STEAM_WORKSHOP_MODID
     fi
     
+    $STEAM_CMD +runscript "$STEAMCMD_WORKSHOP" > /dev/null &
+    waitBackgroundTask $!
+
     echo -e; echo -e;
     echo -e "Copying workshop content."
     cp -R $STEAM_DIR/steamapps/workshop/content/$STEAM_WORKSHOP_APPID/$STEAM_WORKSHOP_MODID $STEAM_WORKSHOP_MOD_DIR
