@@ -248,7 +248,7 @@ updateCheck () {
     
     local OldVersion=1
     if [ -e "$STEAM_DIR/steamapps/workshop/appworkshop_346110.acf" ]; then
-        OldVersion=$(cat $STEAM_DIR/steamapps/workshop/appworkshop_346110.acf | parseSteamAcf "AppWorkshop.WorkshopItemsInstalled.$STEAM_WORKSHOP_MODID.timeupdated")
+        OldVersion=$(cat $STEAM_DIR/steamapps/workshop/appworkshop_$STEAM_WORKSHOP_APPID.acf | parseSteamAcf "AppWorkshop.WorkshopItemsInstalled.$STEAM_WORKSHOP_MODID.timeupdated")
         #echo -e "old version: $OldVersion"
     else
         echo -e "Mod $STEAM_WORKSHOP_MODID not yet downloaded"
@@ -257,7 +257,7 @@ updateCheck () {
     $STEAM_CMD +runscript "$STEAMCMD_WORKSHOP" > /dev/null &
     waitBackgroundTask $!
     
-    local NewVersion=$(cat $STEAM_DIR/steamapps/workshop/appworkshop_346110.acf | parseSteamAcf "AppWorkshop.WorkshopItemsInstalled.$STEAM_WORKSHOP_MODID.timeupdated")
+    local NewVersion=$(cat $STEAM_DIR/steamapps/workshop/appworkshop_$STEAM_WORKSHOP_APPID.acf | parseSteamAcf "AppWorkshop.WorkshopItemsInstalled.$STEAM_WORKSHOP_MODID.timeupdated")
     #echo -e "new version: $NewVersion"
     
     if [ $NewVersion -gt $OldVersion ]; then
