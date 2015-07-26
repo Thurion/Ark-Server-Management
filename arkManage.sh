@@ -115,9 +115,8 @@ start () {
         echo -e "Screen session is already running. Checking if there is a server process ..."
         
         if [ $(ps ux | grep -o "$EXECUTABLE" | wc -l) -gt 2 ]; then # ps gives 3 results
-            echo -e "Server is already running. Exiting ..."
-            echo -e;
-            exit
+            echo -e "Server is already running. Nothing to do here ..."
+            return
         else
             echo -e "Starting server in screen session $SCREEN."
             screen -S $SCREEN -X stuff "$EXECUTABLE $LAUNCH_PARAMS $(printf '\r')"
