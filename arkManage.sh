@@ -250,17 +250,19 @@ updateCheck () {
 autoUpdate () {
     updateCheck
     local Reason=
-    
-    if [ $UPDATES_EXECUTABLE -a $UPDATES_WORKSHOP ]; then
+
+    if [ $UPDATES_EXECUTABLE -gt 0 -a $UPDATES_WORKSHOP -gt 0 ]; then
         Reason="Game and workshop updates"
-    elif [ $UPDATES_EXECUTABLE ]; then
+    elif [ $UPDATES_EXECUTABLE -gt 0 ]; then
         Reason="Game updates"
-    elif [ $UPDATES_WORKSHOP ]; then
+    elif [ $UPDATES_WORKSHOP -gt 0 ]; then
         Reason="Workshop updates"
     fi
     
-    stop 15 $Reason
-    updateAndStart
+    if [ -n "$Reason" ]; then
+        stop 15 "$Reason"
+        updateAndStart
+    fi
 }
 
 updateAndStart () {
