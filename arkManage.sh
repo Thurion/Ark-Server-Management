@@ -239,8 +239,10 @@ updateCheck () {
     #echo -e "new version: $NewVersion"
     
     if [ $NewVersion -gt $OldVersion ]; then
-      echo -e "New workshop content available"  
-      UPDATES_WORKSHOP=1
+        echo -e "New workshop content available."
+        UPDATES_WORKSHOP=1
+    else
+        echo -e "No new workshop content available."
     fi
     
 }
