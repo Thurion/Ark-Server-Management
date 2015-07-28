@@ -3,6 +3,7 @@
 # Ark launch options
 ARK_THE_ISLAND=TheIsland?listen
 ARK_MOD=/Game/Mods/479478153/MalnexMod?listen?ModId\=479478153
+# use desired port-1 because the server starts on configured port+1. Query and RCON are not affected
 ARK_PORTS=Port\=7777?QueryPort\=27015?RCONEnabled\=true?RCONPort\=32123
 ARK_PASSWORDS=ServerPassword\=MyPass?ServerAdminPassword\=MySecretPass
 ARK_PVE_OPTIONS=ServerPVE\=true?PvEStructureDecay?DestructionPeriod\=0?bDisableStructureDecayPVE\=true
