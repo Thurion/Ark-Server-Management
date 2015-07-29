@@ -195,13 +195,14 @@ update () {
     fi
 
     $STEAM_CMD +runscript "$STEAMCMD_UPDATE"
-    echo -e;echo -e;
+    echo -e; echo -e;
 
     if [ -z "$STEAM_WORKSHOP_APPID" -o -z "$STEAM_WORKSHOP_MODID" ]; then
         # nothing else to do here
-        continue
+        return
     fi
 
+    # delete old files in server folder, copy new files later
     if [ -d "$STEAM_WORKSHOP_MOD_DIR/$STEAM_WORKSHOP_MODID" ]; then
         rm -r $STEAM_WORKSHOP_MOD_DIR/$STEAM_WORKSHOP_MODID
     fi
