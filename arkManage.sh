@@ -246,7 +246,7 @@ updateCheck () {
     fi
 
     local OldVersion=1
-    if [ -e "$STEAM_DIR/steamapps/workshop/appworkshop_346110.acf" ]; then
+    if [ -e "$STEAM_DIR/steamapps/workshop/appworkshop_$STEAM_WORKSHOP_APPID.acf" ]; then
         OldVersion=$(cat $STEAM_DIR/steamapps/workshop/appworkshop_$STEAM_WORKSHOP_APPID.acf | parseSteamAcf "AppWorkshop.WorkshopItemsInstalled.$STEAM_WORKSHOP_MODID.timeupdated")
         #echo -e "old version: $OldVersion"
     else
