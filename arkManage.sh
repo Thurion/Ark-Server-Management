@@ -109,7 +109,7 @@ parseSteamAcf () {
         fi
     done
 
-    echo "NOT FOUND! ERROR?"
+    echo "-1"
 }
 
 start () {
@@ -197,14 +197,15 @@ update () {
     $STEAM_CMD +runscript "$STEAMCMD_UPDATE"
     echo -e; echo -e;
 
-    if [ -z "$STEAM_WORKSHOP_APPID" -o -z "$STEAM_WORKSHOP_MODID" ]; then
+    if [ -z "$STEAM_WORKSHOP_APPID" -o -z "$STEAM_WORKSHOP_MODIDS" ]; then
         # nothing else to do here
         return
     fi
 
     # delete old files in server folder, copy new files later
-    if [ -d "$STEAM_WORKSHOP_MOD_DIR/$STEAM_WORKSHOP_MODID" ]; then
-        rm -r $STEAM_WORKSHOP_MOD_DIR/$STEAM_WORKSHOP_MODID
+    if [ -d "$STEAM_WORKSHOP_MOD_DIR/" ]; then
+        rm -r $STEAM_WORKSHOP_MOD_DIR
+        mkdir -p $STEAM_WORKSHOP_MOD_DIR
     fi
 
     if [ "$1" = "-f" ]; then
@@ -219,7 +220,7 @@ update () {
 
     echo -e; echo -e;
     echo -e "Copying workshop content."
-    cp -R $STEAM_DIR/steamapps/workshop/content/$STEAM_WORKSHOP_APPID/$STEAM_WORKSHOP_MODID $STEAM_WORKSHOP_MOD_DIR
+    cp -R $STEAM_DIR/steamapps/workshop/content/$STEAM_WORKSHOP_APPID/* $STEAM_WORKSHOP_MOD_DIR
 }
 
 updateCheck () {
@@ -240,29 +241,40 @@ updateCheck () {
     fi
 
     # check for new workshop contents
-    if [ -z "$STEAM_WORKSHOP_APPID" -o -z "$STEAM_WORKSHOP_MODID" ]; then
+    if [ -z "$STEAM_WORKSHOP_APPID" -o -z "$STEAM_WORKSHOP_MODIDS" ]; then
         echo -e "No workshop IDs given, not checking for new content."
         return
     fi
 
-    local OldVersion=1
-    if [ -e "$STEAM_DIR/steamapps/workshop/appworkshop_$STEAM_WORKSHOP_APPID.acf" ]; then
-        OldVersion=$(cat $STEAM_DIR/steamapps/workshop/appworkshop_$STEAM_WORKSHOP_APPID.acf | parseSteamAcf "AppWorkshop.WorkshopItemsInstalled.$STEAM_WORKSHOP_MODID.timeupdated")
-        #echo -e "old version: $OldVersion"
-    else
-        echo -e "Mod $STEAM_WORKSHOP_MODID not yet downloaded"
-    fi
+    local Ids=$(echo $STEAM_WORKSHOP_MODIDS | tr "," "\n")
+    local OldVersion=
+
+    for Id in $Ids; do
+        OldVersion[$Id]=1
+        if [ -e "$STEAM_DIR/steamapps/workshop/appworkshop_$STEAM_WORKSHOP_APPID.acf" ]; then
+            OldVersion[$Id]=$(cat $STEAM_DIR/steamapps/workshop/appworkshop_$STEAM_WORKSHOP_APPID.acf | parseSteamAcf "AppWorkshop.WorkshopItemsInstalled.$Id.timeupdated")
+            #echo -e "old version: ${OldVersion[$Id]}"
+        else
+            echo -e "No mods for app $STEAM_WORKSHOP_APPID downloaded yet."
+        fi
+    done
 
     $STEAM_CMD +runscript "$STEAMCMD_WORKSHOP" > /dev/null &
     waitBackgroundTask $!
 
-    local NewVersion=$(cat $STEAM_DIR/steamapps/workshop/appworkshop_$STEAM_WORKSHOP_APPID.acf | parseSteamAcf "AppWorkshop.WorkshopItemsInstalled.$STEAM_WORKSHOP_MODID.timeupdated")
-    #echo -e "new version: $NewVersion"
+    local NewVersion=
+    for Id in $Ids; do
+        NewVersion[$Id]=$(cat $STEAM_DIR/steamapps/workshop/appworkshop_$STEAM_WORKSHOP_APPID.acf | parseSteamAcf "AppWorkshop.WorkshopItemsInstalled.$Id.timeupdated")
 
-    if [ $NewVersion -gt $OldVersion ]; then
-        echo -e "New workshop content available."
-        UPDATES_WORKSHOP=1
-    else
+        if [ ${NewVersion[$Id]} -gt ${OldVersion[$Id]} ]; then
+            UPDATES_WORKSHOP=1
+            echo -e "New workshop content for mod $Id available."
+        elif [ ${NewVersion[$Id]} -eq -1 ]; then
+            echo -e "Found a problem with the version of mod $Id. Is it also set to download in $STEAMCMD_WORKSHOP?"
+        fi
+    done
+
+    if [ $UPDATES_WORKSHOP -eq 0 ]; then
         echo -e "No new workshop content available."
     fi
 }

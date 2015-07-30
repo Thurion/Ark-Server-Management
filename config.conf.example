@@ -1,8 +1,17 @@
 #!/bin/bash
 
-# Ark launch options
-ARK_THE_ISLAND=TheIsland?listen
-ARK_MOD=/Game/Mods/479478153/MalnexMod?listen?ModId\=479478153
+# Steam
+STEAM_DIR=/home/ark/Steam
+STEAM_CMD=$STEAM_DIR/steamcmd.sh
+STEAM_WORKSHOP_APPID=346110
+STEAM_WORKSHOP_MODIDS=479478153
+STEAM_WORKSHOP_MOD_DIR=/home/ark/server/ShooterGame/Content/Mods
+
+# Ark launch options (only in this file)
+ARK_MAP=TheIsland
+ARK_CUSTOM_MAP=/Game/Mods/485317707/halo
+# mods can also be specified in the ini file using ActiveMods=id1,id2,id3
+ARK_MODS=GameModIds\=$STEAM_WORKSHOP_MODIDS
 # use desired port-1 because the server starts on configured port+1. Query and RCON are not affected
 ARK_PORTS=Port\=7777?QueryPort\=27015?RCONEnabled\=true?RCONPort\=32123
 ARK_PASSWORDS=ServerPassword\=MyPass?ServerAdminPassword\=MySecretPass
@@ -19,14 +28,7 @@ MCRCON=/home/ark/mcrcon/mcrcon
 
 # executable
 EXECUTABLE=/home/ark/server/ShooterGame/Binaries/Linux/ShooterGameServer
-LAUNCH_PARAMS="$ARK_MOD?$ARK_PORTS?$ARK_SESSION -server -log"
-
-# Steam
-STEAM_DIR=/home/ark/Steam
-STEAM_CMD=$STEAM_DIR/steamcmd.sh
-STEAM_WORKSHOP_APPID=346110
-STEAM_WORKSHOP_MODID=479478153
-STEAM_WORKSHOP_MOD_DIR=/home/ark/server/ShooterGame/Content/Mods
+LAUNCH_PARAMS="$ARK_MAP?listen?$ARK_MODS?$ARK_PORTS?$ARK_SESSION -server -log"
 
 # name of screen session
 SCREEN=arkServer
