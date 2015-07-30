@@ -13,7 +13,7 @@ Warning: A little knowledge of how to use the command line and Git are necessary
 5.  Create a copy of ark_workshop_update.txt.example if you want to use mods. You need to add a valid user who owns the game.
 6.  Edit arkManage.sh and set the path to the config to your config
 7.  Make script executable
-8.  I using mods, start SteamCMD and log into your account once because SteamCMD needs to be authenticated (Steam Guard) first. If using a mobile authenticator, switch to email guard codes.
+8.  If using mods, start SteamCMD and log into your account once because SteamCMD needs to be authenticated (Steam Guard) first. If using a mobile authenticator, switch to email guard codes.
 
 Usage
 --------
