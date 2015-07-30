@@ -32,4 +32,5 @@ Limitations
 --------
 
 * Supports only one server
+* updateCheck only finds an update once for each update because newer versions are downloaded in the process.
 * Not ready for stackable mods which will be available in the near future
