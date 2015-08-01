@@ -15,34 +15,36 @@ parseConfig() {
     RCON_PORT=$(cat $CONFIG | grep $CFG_RCON_PORT| cut -d'=' -f2)
 }
 
-msgServerMinutes() {
-    local Message="${@:2}"
-    if [ -z "$Message" ]; then
-        Message="No reason given"
+# params:
+# 1: time
+# 2: (m|s): minutes or seconds
+# 3: message
+msgServer() {
+    local timeType="seconds"
+    if [ "$2" = "m" ]; then
+        timeType="minutes"
     fi
-    $MCRCON -s -H $RCON_HOST -P $RCON_PORT -p $RCON_PW "Broadcast Server shutting down in $1 minutes. Reason: $Message"
-    echo -e "Server shutting down down in $1 minutes. Reason: $Message"
-}
 
-msgServerSeconds() {
-    local Message="${@:2}"
+    local Message="$3"
     if [ -z "$Message" ]; then
         Message="No reason given"
     fi
-    $MCRCON -s -H $RCON_HOST -P $RCON_PORT -p $RCON_PW "Broadcast Server shutting down in $1 seconds. Reason: $Message"
-    echo -e "Server shutting down in $1 seconds. Reason: $Message"
+
+    $MCRCON -s -H $RCON_HOST -P $RCON_PORT -p $RCON_PW "Broadcast Server shutting down in $1 $timeType. Reason: $Message"
+    echo -e "Server shutting down in $1 $timeType. Reason: $Message"
 }
 
 countDown() {
-    msgServerSeconds 60
-    echo -e "Shut down in 60 seconds."
+    local Message=$1
+    msgServer 60 "s" "$Message"
+    # echo -e "Shut down in 60 seconds."
     sleep 30s
-    msgServerSeconds 30
-    echo -e "Shut down in 30 seconds."
+    msgServer 30 "s" "$Message"
+    # echo -e "Shut down in 30 seconds."
     sleep 15s
     local timer=15
     while [ $timer -gt 0 ]; do
-        msgServerSeconds $timer
+        msgServer $timer "s" "$Message"
         #echo -e "Shut down in $timer."
         sleep 1s
         let timer-=1
@@ -163,7 +165,7 @@ stop () {
     #echo -e "Stopping server in $Time minute(s)."
 
     while [ $Time -ge $WARNING_INTERVALL ]; do
-        msgServerMinutes $Time $Message
+        msgServer $Time "m" "$Message"
 
         if [ $(($Time-$WARNING_INTERVALL)) -ge 5 ]
         then
@@ -177,13 +179,13 @@ stop () {
     done
 
     if [ $Time -gt 1 ]; then
-        msgServerMinutes $Time $Message
+        msgServer $Time "m" "$Message"
         # wait until there is 1 minute left
         sleep $((($Time-1)*60))
         Time=1
     fi
 
-    countDown
+    countDown "$Message"
 }
 
 update () {
