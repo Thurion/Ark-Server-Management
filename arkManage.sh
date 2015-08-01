@@ -293,6 +293,8 @@ autoUpdate () {
 
     if [ -n "$Reason" ]; then
         stop $SHUTDOWN_TIME_UPDATES $Reason
+        # wait for the server to shut down
+        sleep 30s
         updateAndStart
     fi
 }
