@@ -280,6 +280,7 @@ updateCheck () {
 }
 
 autoUpdate () {
+    echo -e "$(date) Start of autoUpdate"
     updateCheck
     local Reason=
 
@@ -297,6 +298,8 @@ autoUpdate () {
         sleep 30s
         updateAndStart
     fi
+    echo -e "$(date) End of autoUpdate"
+    echo -e
 }
 
 updateAndStart () {
